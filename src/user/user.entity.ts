@@ -32,10 +32,14 @@ export class UserEntity {
         this.password = await bcrypt.hash(this.password, 10);
     }
 
-    toResponseObject(showToken: boolean = true) {
+    toResponseObject(showToken: boolean = true): UserRo {
+        const { id, created, username, token } = this;
         return {
-            ...this,
-            token: showToken ? this.token : undefined
+            id,
+            created,
+            username,
+            token: showToken && token || undefined,
+            ideas: this.ideas || undefined,
         };
     }
 

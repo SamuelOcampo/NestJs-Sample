@@ -13,12 +13,17 @@ export class UserService {
     ) { }
 
     async showAll(): Promise<UserRo[]> {
-        const users = await this.userRepository.find({ relations: ['ideas']});
+        const users = await this.userRepository.find({ relations: ['ideas'] });
         return users.map(user => user.toResponseObject(false));
     }
     async login(data: UserDto) {
         const { username, password } = data;
-        const user = await this.userRepository.findOne({ where: { username } });
+        const user = await this.userRepository
+            .createQueryBuilder()
+            .where('UserEntity.username = :username', { username })
+            .addSelect('UserEntity.password')
+            .getOne();
+
         if (!user || !(await user.comparePassword(password))) {
             throw new HttpException(
                 'Invalid username/password',
