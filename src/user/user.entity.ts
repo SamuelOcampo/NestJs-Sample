@@ -18,7 +18,10 @@ export class UserEntity {
     })
     username: string;
 
-    @Column('text')
+    @Column({
+        type: 'text',
+        select: false
+    })
     password: string;
 
     @OneToMany(type => IdeaEntity, idea => idea.author)
@@ -29,14 +32,10 @@ export class UserEntity {
         this.password = await bcrypt.hash(this.password, 10);
     }
 
-    toResponseObject(showToken: boolean = true): UserRo {
-        const { id, created, username, token } = this;
+    toResponseObject(showToken: boolean = true) {
         return {
-            id,
-            created,
-            username,
-            token: showToken && token || undefined,
-            ideas: this.ideas
+            ...this,
+            token: showToken ? this.token : undefined
         };
     }
 
