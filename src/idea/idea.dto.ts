@@ -16,5 +16,7 @@ export class IdeaRO {
     created: Date;
     idea: string;
     description: string;
-    author: UserRo
+    author: UserRo;
+    upvotes?: Number;
+    downvotes?: Number;
 }
